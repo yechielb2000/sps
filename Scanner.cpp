@@ -119,3 +119,17 @@ bool Scanner::isPortOpen(const int port) const {
 
     return connected;
 }
+
+
+void Scanner::printSummary() const {
+    const int open_ports = this->open_ports.size();
+    std::cout << std::endl;
+    std::cout << "----------------------------------" << std::endl;
+    std::cout << "Found " << open_ports << " Open Ports!" << std::endl;
+    for (size_t i = 0; i < open_ports; ++i) {
+        std::cout << "port: " << this->open_ports[i] << std::endl;
+    }
+    std::cout << std::endl;
+    std::cout << "The rest are closed :/" << std::endl;
+    std::cout << "----------------------------------" << std::endl;
+}

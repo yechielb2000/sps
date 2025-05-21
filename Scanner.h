@@ -7,7 +7,6 @@
 class Scanner {
     int active_threads = 0;
     std::condition_variable cv;
-    int open_ports_count = 0;
     ScanConfig config;
     std::mutex mutex;
     std::vector<int> open_ports{};
@@ -20,7 +19,7 @@ public:
 
     void scanPorts();
 
-    void printSummary();
+    void printSummary() const;
 };
 
 
