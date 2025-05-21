@@ -47,7 +47,7 @@ ScanConfig OptionsParser::parse(int argc, char *argv[]) {
             ("p,ports", "Ports to scan (e.g. 22,80,443 or 20-25)", cxxopts::value<std::string>())
             ("v,verbose", "Verbose output", cxxopts::value<bool>()->default_value("false"))
             ("t,threads", "Max threads", cxxopts::value<int>()->default_value("10"))
-            ("o,output", "Output file", cxxopts::value<std::string>()->default_value(nullptr))
+            ("o,output", "Output file", cxxopts::value<std::string>()->default_value(""))
             ("m,timeout", "Timeout in seconds", cxxopts::value<int>()->default_value("12"))
             ("h,help", "Print usage");
 
