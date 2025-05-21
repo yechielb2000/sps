@@ -64,7 +64,7 @@ void Scanner::scanPorts() {
     }
 }
 
-bool Scanner::isPortOpen(int port) const {
+bool Scanner::isPortOpen(const int port) const {
     const std::string address = this->config.address;
     const int timeout = this->config.timeout;
 
@@ -82,7 +82,7 @@ bool Scanner::isPortOpen(int port) const {
     u_long mode = 1;
     ioctlsocket(sock, FIONBIO, &mode);
 #else
-        fcntl(sock, F_SETFL, O_NONBLOCK);
+            fcntl(sock, F_SETFL, O_NONBLOCK);
 #endif
 
     sockaddr_in addr{};
@@ -114,7 +114,7 @@ bool Scanner::isPortOpen(int port) const {
     closesocket(sock);
     WSACleanup();
 #else
-        close(sock);
+            close(sock);
 #endif
 
     return connected;
