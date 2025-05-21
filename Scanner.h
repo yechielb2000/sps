@@ -10,8 +10,10 @@ class Scanner {
     int open_ports_count = 0;
     ScanConfig config;
     std::mutex mutex;
+    std::vector<int> open_ports{};
 
-    void isPortOpen(const std::string &address, int port, int timeout);
+
+    bool isPortOpen(int port) const;
 
 public:
     explicit Scanner(const ScanConfig &config);

@@ -11,13 +11,15 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cxxopts)
 
-add_executable(simple_ports_scanner simple-ports-scanner.cpp
-        OptionsParser.hpp
+add_executable(simple_ports_scanner
+        simple-ports-scanner.cpp
         OptionsParser.cpp
         scanner.cpp
-        scanner.h
 )
 
 target_link_libraries(simple_ports_scanner PRIVATE cxxopts)
 
-target_include_directories(simple_ports_scanner PRIVATE ${cxxopts_SOURCE_DIR}/include)
+# On Windows, add ws2_32 for sockets
+if (WIN32)
+    target_link_libraries(simple_ports_scanner PRIVATE ws2_32)
+endif()
