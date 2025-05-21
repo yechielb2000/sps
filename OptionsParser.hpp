@@ -4,7 +4,7 @@
 #include <vector>
 #include <cxxopts.hpp>
 
-struct Options {
+struct ScanConfig {
     std::string address;
     std::vector<int> ports;
     bool verbose = false;
@@ -13,5 +13,5 @@ struct Options {
 
 class OptionsParser {
 public:
-    static Options parse(int argc, char* argv[]);
+    static ScanConfig parse(int argc, char* argv[]);
 };

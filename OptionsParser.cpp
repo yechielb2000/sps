@@ -39,7 +39,7 @@ bool parse_ports(const std::string &ports_str, std::vector<int> &ports) {
     return !ports.empty();
 }
 
-Options OptionsParser::parse(int argc, char *argv[]) {
+ScanConfig OptionsParser::parse(int argc, char *argv[]) {
     cxxopts::Options options("PortScanner", "Simple port scanner");
 
     options.add_options()
@@ -56,7 +56,7 @@ Options OptionsParser::parse(int argc, char *argv[]) {
         exit(0);
     }
 
-    Options opts;
+    ScanConfig opts;
 
     opts.address = result["address"].as<std::string>();
     if (!validate_ip(opts.address)) {
