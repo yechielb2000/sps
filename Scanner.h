@@ -20,8 +20,6 @@ public:
 
     void scanPorts();
 
-    void printResult(const std::string &address, int port, bool is_open);
-
     void printSummary();
 };
 
