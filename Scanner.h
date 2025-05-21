@@ -19,7 +19,7 @@ public:
 
     void printResult(const std::string &address, int port, bool is_open);
 
-    void printSummary(const ScanConfig &config);
+    void printSummary();
 };
 
 
