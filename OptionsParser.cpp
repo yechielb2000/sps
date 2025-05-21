@@ -48,6 +48,7 @@ ScanConfig OptionsParser::parse(int argc, char *argv[]) {
             ("v,verbose", "Verbose output", cxxopts::value<bool>()->default_value("false"))
             ("t,threads", "Max threads", cxxopts::value<int>()->default_value("10"))
             ("o,output", "Output file", cxxopts::value<std::string>()->default_value(nullptr))
+            ("m,timeout", "Timeout in seconds", cxxopts::value<int>()->default_value("12"))
             ("h,help", "Print usage");
 
     const auto result = options.parse(argc, argv);
@@ -72,8 +73,10 @@ ScanConfig OptionsParser::parse(int argc, char *argv[]) {
         throw std::invalid_argument("Invalid ports format: " + ports_str);
     }
 
+    opts.output = result["output"].as<std::string>();
     opts.verbose = result["verbose"].as<bool>();
     opts.threads = result["threads"].as<int>();
+    opts.timeout = result["timeout"].as<int>();
 
     return opts;
 }

@@ -7,9 +7,10 @@
 struct ScanConfig {
     std::string address;
     std::vector<int> ports;
-    bool verbose = false;
-    std::string output = nullptr;
-    int threads = 10;
+    int timeout;
+    bool verbose;
+    std::string output;
+    int threads;
 
     std::string toString() const {
         std::string config =
