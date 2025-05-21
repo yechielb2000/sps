@@ -14,6 +14,8 @@ FetchContent_MakeAvailable(cxxopts)
 add_executable(simple_ports_scanner simple-ports-scanner.cpp
         OptionsParser.hpp
         OptionsParser.cpp
+        scanner.cpp
+        scanner.h
 )
 
 target_link_libraries(simple_ports_scanner PRIVATE cxxopts)
