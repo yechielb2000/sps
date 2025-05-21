@@ -10,7 +10,7 @@ class Scanner {
     ScanConfig config;
     std::mutex mutex;
 
-    void sendRequest(const std::string &address, int port);
+    void sendRequest(const std::string &address, int port, int timeout);
 
 public:
     explicit Scanner(const ScanConfig &config);
