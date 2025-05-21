@@ -4,7 +4,6 @@
 #include "OptionsParser.hpp"
 
 class Scanner {
-private:
     int threads_count = 0;
     int open_ports_count = 0;
     int total_ports_count = 0;
