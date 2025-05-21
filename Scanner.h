@@ -11,7 +11,7 @@ class Scanner {
     ScanConfig config;
     std::mutex mutex;
 
-    void sendRequest(const std::string &address, int port, int timeout);
+    void isPortOpen(const std::string &address, int port, int timeout);
 
 public:
     explicit Scanner(const ScanConfig &config);

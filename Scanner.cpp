@@ -23,7 +23,7 @@ void Scanner::scanPorts() {
             std::cout << "Scanning " << address << ":" << port << std::endl;
         }
         thread_pool.emplace_back([this, address, port, timeout, verbose]() {
-            this->sendRequest(address, port, timeout); {
+            this->isPortOpen(address, port, timeout); {
                 std::lock_guard lock(this->mutex);
                 this->active_threads--;
                 if (verbose) {
@@ -39,5 +39,6 @@ void Scanner::scanPorts() {
     }
 }
 
-void Scanner::sendRequest(const std::string &address, int port, int timeout) {
+void Scanner::isPortOpen(const std::string &address, int port, int timeout) {
+
 }
