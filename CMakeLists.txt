@@ -11,5 +11,11 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cxxopts)
 
-add_executable(simple_ports_scanner simple-ports-scanner.cpp)
+add_executable(simple_ports_scanner simple-ports-scanner.cpp
+        OptionsParser.hpp
+        OptionsParser.cpp
+)
 
+target_link_libraries(simple_ports_scanner PRIVATE cxxopts)
+
+target_include_directories(simple_ports_scanner PRIVATE ${cxxopts_SOURCE_DIR}/include)
