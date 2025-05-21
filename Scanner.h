@@ -1,10 +1,13 @@
 #ifndef SCANNER_H
 #define SCANNER_H
 
+#include <condition_variable>
 #include "OptionsParser.hpp"
 
 class Scanner {
-    int threads_count = 0;
+    int active_threads = 0;
+    std::condition_variable cv;
+
     int open_ports_count = 0;
     int total_ports_count = 0;
     ScanConfig config;
