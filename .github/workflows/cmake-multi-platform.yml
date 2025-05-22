@@ -11,7 +11,8 @@ permissions:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -55,4 +56,4 @@ jobs:
         with:
           files: ${{ steps.vars.outputs.build-dir }}/**/*
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
