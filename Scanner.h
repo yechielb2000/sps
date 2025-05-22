@@ -12,7 +12,7 @@ class Scanner {
     std::vector<int> open_ports{};
 
 
-    bool is_port_open(int port) const;
+    bool is_port_open(int port);
 
 public:
     explicit Scanner(const ScanConfig &config);
@@ -23,4 +23,4 @@ public:
 };
 
 
-#endif //SCANNER_H
+#endif

@@ -23,7 +23,7 @@ typedef int socklen_t;
 #endif
 
 
-Scanner::Scanner(const ScanConfig &config) {
+Scanner::Scanner(const ScanConfig &config) : config(config) {
     this->config = config;
 }
 
@@ -31,39 +31,42 @@ void Scanner::scan_ports() {
     std::vector<std::thread> thread_pool;
     const int maximum_threads = this->config.threads;
     const std::string address = this->config.address;
-    const bool verbose = this->config.verbose;
+    const bool verbose = this->config.verbose; {
+        std::unique_lock cout_lock(this->mutex);
+        for (int port: this->config.ports) {
+            while (this->active_threads >= maximum_threads) {
+                cv.wait(cout_lock, [this, maximum_threads] {
+                    return this->active_threads < maximum_threads;
+                });
+            }
 
-    for (int port : this->config.ports) {
-        std::unique_lock lock(this->mutex);
-        cv.wait(lock, [this, maximum_threads] { return this->active_threads < maximum_threads; });
-        this->active_threads--;
-        if (verbose) {
-            std::cout << "Scanning " << address << ":" << port << std::endl;
-        }
-        thread_pool.emplace_back(
-            [this, address, port, verbose] {
-                if (this->is_port_open(port)) {
-                    std::cout << "Found Open Port " << address << ":" << port << std::endl;
+            this->active_threads++;
+            if (verbose) {
+                std::cout << "Scanning " << address << ":" << port << std::endl;
+            }
+
+            thread_pool.emplace_back([this, address, port, verbose] {
+                const bool is_open = this->is_port_open(port);
+                std::lock_guard lock(this->mutex);
+
+                if (is_open) {
+                    std::cout << "Found open port " << address << ":" << port << std::endl;
                     this->open_ports.push_back(port);
                 } else if (verbose) {
-                    std::cout << "Port is Closed " << address << ":" << port << std::endl;
-                } {
-                    std::lock_guard lock(this->mutex);
-                    this->active_threads++;
-                    if (verbose) {
-                        std::cout << "Finished scanning " << address << ":" << port << std::endl;
-                    }
+                    std::cout << "Port is closed " << address << ":" << port << std::endl;
                 }
+                this->active_threads--;
                 cv.notify_all();
             });
-        for (auto &t: thread_pool) {
-            if (t.joinable())
-                t.join();
         }
+    }
+
+    for (auto &thread: thread_pool) {
+        thread.join();
     }
 }
 
-bool Scanner::is_port_open(const int port) const {
+bool Scanner::is_port_open(const int port) {
     const std::string address = this->config.address;
     const int timeout = this->config.timeout;
 
@@ -100,13 +103,13 @@ bool Scanner::is_port_open(const int port) const {
     tv.tv_usec = (timeout % 1000) * 1000;
 
     const int res = select(sock + 1, nullptr, &writefds, nullptr, &tv);
-    bool connected = false;
+    bool is_open = false;
 
     if (res > 0) {
         int so_error = 0;
         socklen_t len = sizeof(so_error);
         getsockopt(sock, SOL_SOCKET, SO_ERROR, reinterpret_cast<char *>(&so_error), &len);
-        connected = so_error == 0;
+        is_open = so_error == 0;
     }
 
 #ifdef _WIN32
@@ -116,11 +119,11 @@ bool Scanner::is_port_open(const int port) const {
             close(sock);
 #endif
 
-    return connected;
+    return is_open;
 }
 
 void Scanner::print_summary() const {
-    const int open_ports = this->open_ports.size();
+    const std::vector<int>::size_type open_ports = this->open_ports.size();
     std::cout << std::endl;
     std::cout << "----------------------------------" << std::endl;
     std::cout << "Found " << open_ports << " Open Ports!" << std::endl;
@@ -128,6 +131,5 @@ void Scanner::print_summary() const {
         std::cout << "port: " << this->open_ports[i] << std::endl;
     }
     std::cout << std::endl;
-    std::cout << "The rest are closed :/" << std::endl;
     std::cout << "----------------------------------" << std::endl;
 }
