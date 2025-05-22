@@ -11,7 +11,7 @@ struct ScanConfig {
     bool verbose;
     int threads;
 
-    std::string toString() const {
+    [[nodiscard]] std::string toString() const {
         std::string config =
                 "address: " + address + "\n"
                 "ports: " + std::to_string(ports.size()) + "\n"
