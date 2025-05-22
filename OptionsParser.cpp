@@ -40,14 +40,13 @@ bool parse_ports(const std::string &ports_str, std::vector<int> &ports) {
 }
 
 ScanConfig OptionsParser::parse(int argc, char *argv[]) {
-    cxxopts::Options options("PortScanner", "Simple port scanner");
+    cxxopts::Options options("Port Scanner", "Simple port scanner");
 
     options.add_options()
             ("a,address", "IP address to scan", cxxopts::value<std::string>()->default_value("127.0.0.1"))
             ("p,ports", "Ports to scan (e.g. 22,80,443 or 20-25)", cxxopts::value<std::string>())
             ("v,verbose", "Verbose output", cxxopts::value<bool>()->default_value("false"))
             ("t,threads", "Max threads", cxxopts::value<int>()->default_value("10"))
-            ("o,output", "Output file", cxxopts::value<std::string>()->default_value(""))
             ("m,timeout", "Timeout in seconds", cxxopts::value<int>()->default_value("12"))
             ("h,help", "Print usage");
 
@@ -68,12 +67,12 @@ ScanConfig OptionsParser::parse(int argc, char *argv[]) {
     if (!result.count("ports")) {
         throw std::invalid_argument("Ports must be specified with -p option");
     }
-    std::string ports_str = result["ports"].as<std::string>();
+
+    const auto ports_str = result["ports"].as<std::string>();
     if (!parse_ports(ports_str, opts.ports)) {
         throw std::invalid_argument("Invalid ports format: " + ports_str);
     }
 
-    opts.output = result["output"].as<std::string>();
     opts.verbose = result["verbose"].as<bool>();
     opts.threads = result["threads"].as<int>();
     opts.timeout = result["timeout"].as<int>();

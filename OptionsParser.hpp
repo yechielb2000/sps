@@ -9,7 +9,6 @@ struct ScanConfig {
     std::vector<int> ports;
     int timeout;
     bool verbose;
-    std::string output;
     int threads;
 
     std::string toString() const {
