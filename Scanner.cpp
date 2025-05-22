@@ -43,7 +43,7 @@ void Scanner::scan_ports() {
             }
 
             this->active_threads++;
-            logger_->trace("Scanning {}:{}", address, port);
+            logger_->debug("Scanning {}:{}", address, port);
 
             thread_pool.emplace_back([this, address, port] {
                 const bool is_open = this->is_port_open(port);
@@ -53,7 +53,7 @@ void Scanner::scan_ports() {
                     logger_->info("Port is open {}:{}", address, port);
                     this->open_ports.push_back(port);
                 } else {
-                    logger_->trace("Port is close {}:{}", address, port);
+                    logger_->debug("Port is close {}:{}", address, port);
                 }
                 this->active_threads--;
                 cv.notify_all();
@@ -92,7 +92,7 @@ bool Scanner::is_port_open(const int port) {
     addr.sin_port = htons(port);
     inet_pton(AF_INET, address.c_str(), &addr.sin_addr);
 
-    logger_->trace("Connecting to {}:{}", address, port);
+    logger_->debug("Connecting to {}:{}", address, port);
 
     connect(sock, reinterpret_cast<sockaddr *>(&addr), sizeof(addr));
 

@@ -46,6 +46,6 @@ void setup_logger() {
     logger = std::make_shared<spdlog::logger>("main_logger", wrapped_sink);
     spdlog::register_logger(logger);
 
-    logger->set_level(spdlog::level::debug);
+    logger->set_level(spdlog::level::info);
     logger->flush_on(spdlog::level::warn);
 }
