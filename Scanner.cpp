@@ -33,11 +33,10 @@ void Scanner::scan_ports() {
     const std::string address = this->config.address;
     const bool verbose = this->config.verbose;
 
-    for (size_t i = 0; i < this->config.ports.size(); ++i) {
-        const int port = this->config.ports[i];
+    for (int port : this->config.ports) {
         std::unique_lock lock(this->mutex);
         cv.wait(lock, [this, maximum_threads] { return this->active_threads < maximum_threads; });
-        this->active_threads++;
+        this->active_threads--;
         if (verbose) {
             std::cout << "Scanning " << address << ":" << port << std::endl;
         }
@@ -50,7 +49,7 @@ void Scanner::scan_ports() {
                     std::cout << "Port is Closed " << address << ":" << port << std::endl;
                 } {
                     std::lock_guard lock(this->mutex);
-                    this->active_threads--;
+                    this->active_threads++;
                     if (verbose) {
                         std::cout << "Finished scanning " << address << ":" << port << std::endl;
                     }
@@ -96,7 +95,7 @@ bool Scanner::is_port_open(const int port) const {
     FD_ZERO(&writefds);
     FD_SET(sock, &writefds);
 
-    timeval tv;
+    timeval tv{};
     tv.tv_sec = timeout;
     tv.tv_usec = (timeout % 1000) * 1000;
 
