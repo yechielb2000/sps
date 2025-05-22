@@ -9,60 +9,97 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
+  build-linux:
+    name: Build on Ubuntu
+    runs-on: ubuntu-latest
     permissions:
       contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ ubuntu-latest, windows-latest ]
-        build_type: [ Release ]
-        include:
-          - os: windows-latest
-            c_compiler: cl
-            cpp_compiler: cl
-          - os: ubuntu-latest
-            c_compiler: gcc
-            cpp_compiler: g++
+
+    env:
+      BUILD_DIR: ${{ github.workspace }}/build
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set output directory
-        id: vars
-        run: echo "build-dir=${{ github.workspace }}/build" >> $GITHUB_OUTPUT
-
       - name: Configure CMake
-        shell: bash
-        run: >
-          cmake -S . -B "${{ steps.vars.outputs.build-dir }}" \
-            -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
-            -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
-            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        run: |
+          cmake -S . -B "${BUILD_DIR}" \
+            -DCMAKE_C_COMPILER=gcc \
+            -DCMAKE_CXX_COMPILER=g++ \
+            -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
-        run: >
-          cmake --build ${{ steps.vars.outputs.build-dir }}
-          --config ${{ matrix.build_type }}
+        run: |
+          cmake --build "${BUILD_DIR}" --config Release
 
       - name: Test
-        working-directory: ${{ steps.vars.outputs.build-dir }}
-        run: >
-          ctest --output-on-failure --build-config ${{ matrix.build_type }}
+        working-directory: ${{ env.BUILD_DIR }}
+        run: |
+          ctest --output-on-failure --build-config Release
 
       - name: Install
-        run: >
-          cmake --install ${{ steps.vars.outputs.build-dir }}
-          --config ${{ matrix.build_type }}
+        run: |
+          cmake --install "${BUILD_DIR}" --config Release
 
       - name: List build directory contents
-        run: ls -R ${{ steps.vars.outputs.build-dir }}
+        run: |
+          ls -R "${BUILD_DIR}"
 
       - name: Upload artifacts to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ steps.vars.outputs.build-dir }}/install/**/*
+          files: ${{ env.BUILD_DIR }}/**/sps
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-windows:
+    name: Build on Windows
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    env:
+      BUILD_DIR: ${{ github.workspace }}\build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        shell: cmd
+        run: |
+          cmake -S . -B "%BUILD_DIR%" ^
+            -DCMAKE_C_COMPILER=cl ^
+            -DCMAKE_CXX_COMPILER=cl ^
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        shell: cmd
+        run: |
+          cmake --build "%BUILD_DIR%" --config Release
+
+      - name: Test
+        working-directory: ${{ env.BUILD_DIR }}
+        shell: cmd
+        run: |
+          ctest --output-on-failure --build-config Release
+
+      - name: Install
+        shell: cmd
+        run: |
+          cmake --install "%BUILD_DIR%" --config Release
+
+      - name: List build directory contents
+        shell: cmd
+        run: |
+          dir /S "%BUILD_DIR%"
+
+      - name: Upload artifacts to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+              ${{ env.BUILD_DIR }}\**\*.exe
+              ${{ env.BUILD_DIR }}\**\*.dll
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
