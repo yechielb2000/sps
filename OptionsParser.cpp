@@ -14,10 +14,9 @@ bool validate_ip(const std::string &ip) {
 bool parse_ports(const std::string &ports_str, std::vector<int> &ports) {
     constexpr int MAX_PORT_NUMBER = 65535;
     ports.clear();
-    auto dash_pos = ports_str.find('-');
-    if (dash_pos != std::string::npos) {
-        int start = std::stoi(ports_str.substr(0, dash_pos));
-        int end = std::stoi(ports_str.substr(dash_pos + 1));
+    if (const auto dash_pos = ports_str.find('-'); dash_pos != std::string::npos) {
+        const int start = std::stoi(ports_str.substr(0, dash_pos));
+        const int end = std::stoi(ports_str.substr(dash_pos + 1));
         if (start <= 0 || end <= 0 || start > MAX_PORT_NUMBER || end > MAX_PORT_NUMBER || start > end)
             return false;
         for (int p = start; p <= end; ++p)
