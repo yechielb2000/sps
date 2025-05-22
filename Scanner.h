@@ -17,7 +17,7 @@ class Scanner {
 public:
     explicit Scanner(const ScanConfig &config);
 
-    void scanPorts();
+    void scan_ports();
 
     void print_summary() const;
 };

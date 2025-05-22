@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Scanning..." << std::endl;
 
     Scanner scanner(config);
-    scanner.scanPorts();
+    scanner.scan_ports();
     scanner.print_summary();
 
     return 0;

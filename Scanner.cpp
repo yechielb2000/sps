@@ -27,7 +27,7 @@ Scanner::Scanner(const ScanConfig &config) {
     this->config = config;
 }
 
-void Scanner::scanPorts() {
+void Scanner::scan_ports() {
     std::vector<std::thread> thread_pool;
     const int maximum_threads = this->config.threads;
     const std::string address = this->config.address;
@@ -119,7 +119,6 @@ bool Scanner::is_port_open(const int port) const {
 
     return connected;
 }
-
 
 void Scanner::print_summary() const {
     const int open_ports = this->open_ports.size();
