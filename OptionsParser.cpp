@@ -12,12 +12,13 @@ bool validate_ip(const std::string &ip) {
 }
 
 bool parse_ports(const std::string &ports_str, std::vector<int> &ports) {
+    constexpr int MAX_PORT_NUMBER = 65535;
     ports.clear();
     auto dash_pos = ports_str.find('-');
     if (dash_pos != std::string::npos) {
         int start = std::stoi(ports_str.substr(0, dash_pos));
         int end = std::stoi(ports_str.substr(dash_pos + 1));
-        if (start <= 0 || end <= 0 || start > 65535 || end > 65535 || start > end)
+        if (start <= 0 || end <= 0 || start > MAX_PORT_NUMBER || end > MAX_PORT_NUMBER || start > end)
             return false;
         for (int p = start; p <= end; ++p)
             ports.push_back(p);
@@ -29,7 +30,7 @@ bool parse_ports(const std::string &ports_str, std::vector<int> &ports) {
     while (std::getline(ss, port_str, ',')) {
         try {
             int port = std::stoi(port_str);
-            if (port <= 0 || port > 65535)
+            if (port <= 0 || port > MAX_PORT_NUMBER)
                 return false;
             ports.push_back(port);
         } catch (...) {
@@ -44,7 +45,8 @@ ScanConfig OptionsParser::parse(int argc, char *argv[]) {
 
     options.add_options()
             ("a,address", "IP address to scan", cxxopts::value<std::string>()->default_value("127.0.0.1"))
-            ("p,ports", "Ports to scan (e.g. 22,80,443 or 20-25)", cxxopts::value<std::string>()->default_value("1-65535"))
+            ("p,ports", "Ports to scan (e.g. 22,80,443 or 20-25)",
+             cxxopts::value<std::string>()->default_value("1-65535"))
             ("v,verbose", "Verbose output", cxxopts::value<bool>()->default_value("false"))
             ("t,threads", "Max threads", cxxopts::value<int>()->default_value("10"))
             ("m,timeout", "Timeout in seconds", cxxopts::value<int>()->default_value("12"))
