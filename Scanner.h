@@ -19,7 +19,7 @@ public:
 
     void scanPorts();
 
-    void printSummary() const;
+    void print_summary() const;
 };
 
 

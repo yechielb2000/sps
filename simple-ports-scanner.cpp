@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 
     Scanner scanner(config);
     scanner.scanPorts();
-    scanner.printSummary();
+    scanner.print_summary();
 
     return 0;
 }

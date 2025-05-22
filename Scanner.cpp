@@ -121,7 +121,7 @@ bool Scanner::isPortOpen(const int port) const {
 }
 
 
-void Scanner::printSummary() const {
+void Scanner::print_summary() const {
     const int open_ports = this->open_ports.size();
     std::cout << std::endl;
     std::cout << "----------------------------------" << std::endl;
