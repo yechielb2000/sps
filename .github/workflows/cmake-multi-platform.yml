@@ -35,11 +35,12 @@ jobs:
         run: echo "build-dir=${{ github.workspace }}/build" >> $GITHUB_OUTPUT
 
       - name: Configure CMake
+        shell: bash
         run: >
-          cmake -S . -B "${{ steps.vars.outputs.build-dir }}"
-              -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
-              -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
-              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          cmake -S . -B "${{ steps.vars.outputs.build-dir }}" \
+            -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
+            -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
       - name: Build
         run: >
