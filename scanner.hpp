@@ -1,12 +1,11 @@
-#ifndef SCANNER_H
-#define SCANNER_H
+#pragma once
 
 #include <condition_variable>
 #include <memory>
-#include "OptionsParser.hpp"
+#include "option_parser.hpp"
 #include "spdlog/logger.h"
 
-class Scanner {
+class scanner {
     int active_threads = 0;
     std::condition_variable cv;
     ScanConfig config;
@@ -23,7 +22,7 @@ class Scanner {
         int sock_;
     };
 
-    #ifdef _WIN32
+#ifdef _WIN32
     class WSAInitializer {
     public:
         WSAInitializer();
@@ -31,19 +30,17 @@ class Scanner {
     private:
         bool initialized_ = false;
     };
-    #endif
+#endif
 
     bool is_port_open(int port);
 
 public:
-    explicit Scanner(const ScanConfig &config);
-    ~Scanner() = default;
+    explicit scanner(const ScanConfig &config);
+    ~scanner() = default;
 
-    Scanner(const Scanner&) = delete;
-    Scanner& operator=(const Scanner&) = delete;
+    scanner(const scanner&) = delete;
+    scanner& operator=(const scanner&) = delete;
 
     void scan_ports();
     void print_summary() const;
 };
-
-#endif

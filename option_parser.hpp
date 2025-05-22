@@ -21,7 +21,7 @@ struct ScanConfig {
     }
 };
 
-class OptionsParser {
+class option_parser {
 public:
     static ScanConfig parse(int argc, char *argv[]);
 };

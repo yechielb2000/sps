@@ -1,10 +1,10 @@
-#include "OptionsParser.hpp"
+#include "option_parser.hpp"
 #include <regex>
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
 
-#include "logger.h"
+#include "logger.hpp"
 #include "spdlog/logger.h"
 
 
@@ -48,7 +48,7 @@ namespace {
 }
 
 
-ScanConfig OptionsParser::parse(int argc, char *argv[]) {
+ScanConfig option_parser::parse(int argc, char *argv[]) {
     const auto logger = get_logger();
     cxxopts::Options options("Port Scanner", "Simple port scanner");
 
