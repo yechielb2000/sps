@@ -1,19 +1,32 @@
-## SPS - Simple Ports Scanner 🕷️
+# 🕷️ SPS - Simple Port Scanner
 
-----
+A lightweight command-line tool for scanning ports on a given IP address to check whether they're open or closed.
 
-#### Command line tool to scan ports and see if they are open or close.
+---
 
-Help Command:
+## 🚀 Features
 
-```text
--a, --address - IP address to scan. default is 127.0.0.1.
--p, --ports - Ports to scan (e.g. 22,80,443 or 20-25). default is 1-65535.
--v, --verbose - Verbose output - default is 0.
--t, --threads - Max threads - default is 10.
--m, --timeout - Timeout in seconds - default is 12.
--h, --help - Print usage.
+- Scan single ports, lists, or ranges (e.g. `22`, `80,443,8080`, `443-8989`)
+- Multithreaded scanning for speed
+- Configurable timeout
+- Verbose output mode for detailed status
+- Easy-to-use CLI
+
+---
+
+## 🛠️ Usage
+
+| Option            | Description                                 | Default     |
+|-------------------|---------------------------------------------|-------------|
+| `-a`, `--address` | IP address to scan                          | `127.0.0.1` |
+| `-p`, `--ports`   | Ports to scan (e.g. `22,80,443` or `20-25`) | `1-65535`   |
+| `-v`, `--verbose` | Enable verbose output                       | `0` (off)   |
+| `-t`, `--threads` | Maximum number of threads                   | `10`        |
+| `-m`, `--timeout` | Timeout per port in seconds                 | `12`        |
+| `-h`, `--help`    | Show help message                           |             |
+
+## 🧪 Example
+
+```bash
+sps -a 192.168.1.1 -p 22-8080 -t 50 -v
 ```
-
-### Installation
-todo

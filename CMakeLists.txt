@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.31)
-project(simple_ports_scanner)
+project(sps)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -20,20 +20,20 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(cxxopts spdlog)
 
-add_executable(simple_ports_scanner
-        simple-ports-scanner.cpp
+add_executable(sps
+        sps.cpp
         OptionsParser.cpp
         scanner.cpp
         logger.cpp
         logger.h
 )
 
-target_link_libraries(simple_ports_scanner
+target_link_libraries(sps
         PRIVATE
         cxxopts
         spdlog::spdlog
 )
 
 if (WIN32)
-    target_link_libraries(simple_ports_scanner PRIVATE ws2_32)
+    target_link_libraries(sps PRIVATE ws2_32)
 endif ()
