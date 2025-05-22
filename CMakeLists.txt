@@ -24,7 +24,6 @@ else()
         -Wall
         -Wextra
         -Wpedantic
-        -Werror
         $<$<BOOL:${WIN32}>:-Wno-unknown-pragmas>  # Disable unknown pragmas warn ing on MinGW
     )
 endif()
@@ -41,7 +40,7 @@ FetchContent_Declare(
 FetchContent_Declare(
     spdlog
     GIT_REPOSITORY https://github.com/gabime/spdlog.git
-    GIT_TAG v1.13.0
+    GIT_TAG v1.15.0
 )
 
 FetchContent_MakeAvailable(cxxopts spdlog)

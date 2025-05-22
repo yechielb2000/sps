@@ -103,7 +103,8 @@ bool scanner::is_port_open(const int port) {
     WSAInitializer wsa;
 #endif
 
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    int sock = static_cast<int>(socket(AF_INET, SOCK_STREAM, 0));
+
     if (sock < 0) {
         logger_->error("Failed to create socket");
         return false;
@@ -120,7 +121,7 @@ bool scanner::is_port_open(const int port) {
 
     sockaddr_in addr{};
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(port);
+    addr.sin_port = htons(static_cast<u_short>(port));
     if (inet_pton(AF_INET, config.address.c_str(), &addr.sin_addr) <= 0) {
         logger_->error("Invalid address format");
         return false;
