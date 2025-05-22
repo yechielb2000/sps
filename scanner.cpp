@@ -99,9 +99,9 @@ void scanner::scan_ports() {
 }
 
 bool scanner::is_port_open(const int port) {
-    #ifdef _WIN32
+#ifdef _WIN32
     WSAInitializer wsa;
-    #endif
+#endif
 
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
@@ -111,12 +111,12 @@ bool scanner::is_port_open(const int port) {
 
     SocketRAII sock_guard(sock);
 
-    #ifdef _WIN32
+#ifdef _WIN32
     u_long mode = 1;
     ioctlsocket(sock, FIONBIO, &mode);
-    #else
+#else
     fcntl(sock, F_SETFL, O_NONBLOCK);
-    #endif
+#endif
 
     sockaddr_in addr{};
     addr.sin_family = AF_INET;

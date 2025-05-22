@@ -20,7 +20,13 @@ endif()
 if(MSVC)
     add_compile_options(/W4 /WX)
 else()
-    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+    add_compile_options(
+        -Wall
+        -Wextra
+        -Wpedantic
+        -Werror
+        $<$<BOOL:${WIN32}>:-Wno-unknown-pragmas>  # Disable unknown pragmas warn ing on MinGW
+    )
 endif()
 
 # External dependencies
@@ -79,9 +85,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(BUILD_TESTING "Build tests" OFF)
 if(BUILD_TESTING)
     enable_testing()
-    # Add test subdirectory here when tests are added
 endif()
-
 
 message(STATUS "")
 message(STATUS "Project configuration:")
