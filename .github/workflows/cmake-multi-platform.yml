@@ -51,9 +51,17 @@ jobs:
         run: >
           ctest --output-on-failure --build-config ${{ matrix.build_type }}
 
+      - name: Install
+        run: >
+          cmake --install ${{ steps.vars.outputs.build-dir }}
+          --config ${{ matrix.build_type }}
+
+      - name: List build directory contents
+        run: ls -R ${{ steps.vars.outputs.build-dir }}
+
       - name: Upload artifacts to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ steps.vars.outputs.build-dir }}/**/*
+          files: ${{ steps.vars.outputs.build-dir }}/install/**/*
         env:
           GITHUB_TOKEN: ${{ github.token }}
