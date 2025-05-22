@@ -70,7 +70,7 @@ ScanConfig OptionsParser::parse(int argc, char *argv[]) {
 
     opts.verbose = result["verbose"].as<bool>();
     if (opts.verbose) {
-        logger_->set_level(spdlog::level::debug);
+        logger_->set_level(spdlog::level::trace);
     }
 
     opts.address = result["address"].as<std::string>();
