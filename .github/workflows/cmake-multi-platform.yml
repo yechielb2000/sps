@@ -99,7 +99,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-              ${{ env.BUILD_DIR }}\**\*.exe
-              ${{ env.BUILD_DIR }}\**\*.dll
+              ${{ env.BUILD_DIR }}\Release\sps.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
