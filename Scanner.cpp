@@ -43,7 +43,7 @@ void Scanner::scanPorts() {
         }
         thread_pool.emplace_back(
             [this, address, port, verbose] {
-                if (this->isPortOpen(port)) {
+                if (this->is_port_open(port)) {
                     std::cout << "Found Open Port " << address << ":" << port << std::endl;
                     this->open_ports.push_back(port);
                 } else if (verbose) {
@@ -64,7 +64,7 @@ void Scanner::scanPorts() {
     }
 }
 
-bool Scanner::isPortOpen(const int port) const {
+bool Scanner::is_port_open(const int port) const {
     const std::string address = this->config.address;
     const int timeout = this->config.timeout;
 
