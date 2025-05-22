@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
     const auto logger = get_logger();
 
 
-    logger->info("Scan started with provided configuration:\n {}", config.toString());
+    logger->info("Scan started with provided configuration:\n{}", config.toString());
     logger->info("Scanning...");
 
     Scanner scanner(config);
