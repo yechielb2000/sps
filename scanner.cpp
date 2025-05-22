@@ -1,4 +1,4 @@
-#include "Scanner.h"
+#include "scanner.hpp"
 #include <iostream>
 #include <thread>
 
@@ -21,24 +21,24 @@ typedef int socklen_t;
 #include <errno.h>
 #endif
 
-#include "logger.h"
+#include "logger.hpp"
 
 #ifdef _WIN32
-Scanner::WSAInitializer::WSAInitializer() {
+scanner::WSAInitializer::WSAInitializer() {
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) == 0) {
         initialized_ = true;
     }
 }
 
-Scanner::WSAInitializer::~WSAInitializer() {
+scanner::WSAInitializer::~WSAInitializer() {
     if (initialized_) {
         WSACleanup();
     }
 }
 #endif
 
-Scanner::SocketRAII::~SocketRAII() {
+scanner::SocketRAII::~SocketRAII() {
 #ifdef _WIN32
     closesocket(sock_);
 #else
@@ -46,9 +46,9 @@ Scanner::SocketRAII::~SocketRAII() {
 #endif
 }
 
-Scanner::Scanner(const ScanConfig &config) : config(config), logger_(get_logger()) {}
+scanner::scanner(const ScanConfig &config) : config(config), logger_(get_logger()) {}
 
-void Scanner::scan_ports() {
+void scanner::scan_ports() {
     const int maximum_threads = config.threads;
     const std::string address = config.address;
     
@@ -98,10 +98,10 @@ void Scanner::scan_ports() {
     }
 }
 
-bool Scanner::is_port_open(const int port) {
-    #ifdef _WIN32
+bool scanner::is_port_open(const int port) {
+#ifdef _WIN32
     WSAInitializer wsa;
-    #endif
+#endif
 
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
@@ -111,12 +111,12 @@ bool Scanner::is_port_open(const int port) {
 
     SocketRAII sock_guard(sock);
 
-    #ifdef _WIN32
+#ifdef _WIN32
     u_long mode = 1;
     ioctlsocket(sock, FIONBIO, &mode);
-    #else
+#else
     fcntl(sock, F_SETFL, O_NONBLOCK);
-    #endif
+#endif
 
     sockaddr_in addr{};
     addr.sin_family = AF_INET;
@@ -153,7 +153,7 @@ bool Scanner::is_port_open(const int port) {
     return false;
 }
 
-void Scanner::print_summary() const {
+void scanner::print_summary() const {
     const auto open_ports_count = open_ports.size();
     std::cout << "\n----------------------------------\n"
               << "Found " << open_ports_count << " Open Ports!\n";
