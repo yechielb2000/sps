@@ -3,6 +3,7 @@
 
 #include <condition_variable>
 #include "OptionsParser.hpp"
+#include "spdlog/logger.h"
 
 class Scanner {
     int active_threads = 0;
@@ -10,6 +11,7 @@ class Scanner {
     ScanConfig config;
     std::mutex mutex;
     std::vector<int> open_ports{};
+    std::shared_ptr<spdlog::logger> logger_;
 
 
     bool is_port_open(int port);

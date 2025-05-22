@@ -22,9 +22,12 @@ typedef int socklen_t;
 #include <errno.h>
 #endif
 
+#include "logger.h"
+
 
 Scanner::Scanner(const ScanConfig &config) : config(config) {
     this->config = config;
+    this->logger_ = get_logger();
 }
 
 void Scanner::scan_ports() {
@@ -42,7 +45,7 @@ void Scanner::scan_ports() {
 
             this->active_threads++;
             if (verbose) {
-                std::cout << "Scanning " << address << ":" << port << std::endl;
+                logger_->debug("Scanning {}:{}", address, port);
             }
 
             thread_pool.emplace_back([this, address, port, verbose] {
@@ -50,10 +53,10 @@ void Scanner::scan_ports() {
                 std::lock_guard lock(this->mutex);
 
                 if (is_open) {
-                    std::cout << "Found open port " << address << ":" << port << std::endl;
+                    logger_->info("Found open port {}:{}", address, port);
                     this->open_ports.push_back(port);
                 } else if (verbose) {
-                    std::cout << "Port is closed " << address << ":" << port << std::endl;
+                    logger_->debug("Port is closed {}:{}", address, port);
                 }
                 this->active_threads--;
                 cv.notify_all();

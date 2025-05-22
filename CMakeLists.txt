@@ -36,4 +36,4 @@ target_link_libraries(simple_ports_scanner
 
 if (WIN32)
     target_link_libraries(simple_ports_scanner PRIVATE ws2_32)
-endif()
+endif ()

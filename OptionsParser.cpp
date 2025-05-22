@@ -4,34 +4,48 @@
 #include <iostream>
 #include <stdexcept>
 
-bool validate_ip(const std::string &ip) {
-    const std::regex ip_pattern(
-        R"(^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$)"
-    );
-    return std::regex_match(ip, ip_pattern);
-}
+#include "logger.h"
+#include "spdlog/logger.h"
 
-void parse_ports(const std::string &ports_str, std::vector<int> &ports) {
-    constexpr int MAX_PORT_NUMBER = 65535;
-    ports.clear();
-    if (const auto dash_pos = ports_str.find('-'); dash_pos != std::string::npos) {
-        const int start = std::stoi(ports_str.substr(0, dash_pos));
-        const int end = std::stoi(ports_str.substr(dash_pos + 1));
-        if (start <= 0 || end <= 0 || start > MAX_PORT_NUMBER || end > MAX_PORT_NUMBER || start > end)
-            throw std::invalid_argument("Invalid ports format: " + ports_str);
-        for (int p = start; p <= end; ++p)
-            ports.push_back(p);
+namespace {
+    std::shared_ptr<spdlog::logger> logger_ = get_logger();
+
+    void validate_ip(const std::string &ip) {
+        logger_->debug("Validating IP address: {}", ip);
+        const std::regex ip_pattern(
+            R"(^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$)"
+        );
+        if (std::regex_match(ip, ip_pattern)) {
+            logger_->debug("IP address is valid");
+        } else {
+            logger_->error("Invalid IP address: {}", ip);
+        }
     }
 
-    std::stringstream ss(ports_str);
-    std::string port_str;
-    while (std::getline(ss, port_str, ',')) {
-        int port = std::stoi(port_str);
-        if (port <= 0 || port > MAX_PORT_NUMBER)
-            throw std::invalid_argument("Port " + std::to_string(port) + " is not between 1-65535");
-        ports.push_back(port);
+    void parse_ports(const std::string &ports_str, std::vector<int> &ports) {
+        logger_->debug("Parsing ports: {}", ports_str);
+        constexpr int MAX_PORT_NUMBER = 65535;
+        ports.clear();
+        if (const auto dash_pos = ports_str.find('-'); dash_pos != std::string::npos) {
+            const int start = std::stoi(ports_str.substr(0, dash_pos));
+            const int end = std::stoi(ports_str.substr(dash_pos + 1));
+            if (start <= 0 || end <= 0 || start > MAX_PORT_NUMBER || end > MAX_PORT_NUMBER || start > end)
+                logger_->error("Invalid ports format: {}", ports_str);
+            for (int p = start; p <= end; ++p)
+                ports.push_back(p);
+        }
+
+        std::stringstream ss(ports_str);
+        std::string port_str;
+        while (std::getline(ss, port_str, ',')) {
+            int port = std::stoi(port_str);
+            if (port <= 0 || port > MAX_PORT_NUMBER)
+                logger_->error("Port {} is not between 1-65535", port);
+            ports.push_back(port);
+        }
     }
 }
+
 
 ScanConfig OptionsParser::parse(int argc, char *argv[]) {
     cxxopts::Options options("Port Scanner", "Simple port scanner");
@@ -54,15 +68,17 @@ ScanConfig OptionsParser::parse(int argc, char *argv[]) {
 
     ScanConfig opts;
 
-    opts.address = result["address"].as<std::string>();
-    if (!validate_ip(opts.address)) {
-        throw std::invalid_argument("Invalid IP address format: " + opts.address);
+    opts.verbose = result["verbose"].as<bool>();
+    if (opts.verbose) {
+        logger_->set_level(spdlog::level::debug);
     }
+
+    opts.address = result["address"].as<std::string>();
+    validate_ip(opts.address);
 
     const auto ports_str = result["ports"].as<std::string>();
     parse_ports(ports_str, opts.ports);
 
-    opts.verbose = result["verbose"].as<bool>();
     opts.threads = result["threads"].as<int>();
     opts.timeout = result["timeout"].as<int>();
 
