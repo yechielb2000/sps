@@ -11,32 +11,26 @@ bool validate_ip(const std::string &ip) {
     return std::regex_match(ip, ip_pattern);
 }
 
-bool parse_ports(const std::string &ports_str, std::vector<int> &ports) {
+void parse_ports(const std::string &ports_str, std::vector<int> &ports) {
     constexpr int MAX_PORT_NUMBER = 65535;
     ports.clear();
     if (const auto dash_pos = ports_str.find('-'); dash_pos != std::string::npos) {
         const int start = std::stoi(ports_str.substr(0, dash_pos));
         const int end = std::stoi(ports_str.substr(dash_pos + 1));
         if (start <= 0 || end <= 0 || start > MAX_PORT_NUMBER || end > MAX_PORT_NUMBER || start > end)
-            return false;
+            throw std::invalid_argument("Invalid ports format: " + ports_str);
         for (int p = start; p <= end; ++p)
             ports.push_back(p);
-        return true;
     }
 
     std::stringstream ss(ports_str);
     std::string port_str;
     while (std::getline(ss, port_str, ',')) {
-        try {
-            int port = std::stoi(port_str);
-            if (port <= 0 || port > MAX_PORT_NUMBER)
-                return false;
-            ports.push_back(port);
-        } catch (...) {
-            return false;
-        }
+        int port = std::stoi(port_str);
+        if (port <= 0 || port > MAX_PORT_NUMBER)
+            throw std::invalid_argument("Port " + std::to_string(port) + " is not between 1-65535");
+        ports.push_back(port);
     }
-    return !ports.empty();
 }
 
 ScanConfig OptionsParser::parse(int argc, char *argv[]) {
@@ -66,9 +60,7 @@ ScanConfig OptionsParser::parse(int argc, char *argv[]) {
     }
 
     const auto ports_str = result["ports"].as<std::string>();
-    if (!parse_ports(ports_str, opts.ports)) {
-        throw std::invalid_argument("Invalid ports format: " + ports_str);
-    }
+    parse_ports(ports_str, opts.ports);
 
     opts.verbose = result["verbose"].as<bool>();
     opts.threads = result["threads"].as<int>();
