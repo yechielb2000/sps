@@ -44,7 +44,7 @@ ScanConfig OptionsParser::parse(int argc, char *argv[]) {
 
     options.add_options()
             ("a,address", "IP address to scan", cxxopts::value<std::string>()->default_value("127.0.0.1"))
-            ("p,ports", "Ports to scan (e.g. 22,80,443 or 20-25)", cxxopts::value<std::string>())
+            ("p,ports", "Ports to scan (e.g. 22,80,443 or 20-25)", cxxopts::value<std::string>()->default_value("1-65535"))
             ("v,verbose", "Verbose output", cxxopts::value<bool>()->default_value("false"))
             ("t,threads", "Max threads", cxxopts::value<int>()->default_value("10"))
             ("m,timeout", "Timeout in seconds", cxxopts::value<int>()->default_value("12"))
