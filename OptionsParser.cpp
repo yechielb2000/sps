@@ -65,10 +65,6 @@ ScanConfig OptionsParser::parse(int argc, char *argv[]) {
         throw std::invalid_argument("Invalid IP address format: " + opts.address);
     }
 
-    if (!result.count("ports")) {
-        throw std::invalid_argument("Ports must be specified with -p option");
-    }
-
     const auto ports_str = result["ports"].as<std::string>();
     if (!parse_ports(ports_str, opts.ports)) {
         throw std::invalid_argument("Invalid ports format: " + ports_str);
