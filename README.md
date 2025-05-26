@@ -27,6 +27,23 @@ A lightweight command-line tool for scanning ports on a given IP address to chec
 
 ## 🧪 Example
 
-```bash
-sps -a 192.168.1.1 -p 22-8080 -t 50 -v
+```powershell
+C:\Users\a\Desktop>sps.exe -a 64.190.63.222 -p 8000,8080,443,53,22,21,5000
+
+[17:41:56] [info] Scan started with provided configuration:
+address: 64.190.63.222
+ports: 7
+verbose: 0
+maximum threads: 10
+
+[17:41:56] [info] Scanning...
+[17:41:56] [info] Port is open 64.190.63.222:21
+[17:41:56] [info] Port is open 64.190.63.222:443
+
+----------------------------------
+Found 2 Open Ports!
+port: 21
+port: 443
+
+----------------------------------
 ```
